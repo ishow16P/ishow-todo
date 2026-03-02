@@ -6,9 +6,6 @@ export default defineConfig({
   plugins: [vue(), tailwindcss()],
   server: {
     port: 5173,
-    proxy: {
-      '/api': 'http://localhost:3000',
-    },
   },
   build: {
     rollupOptions: {

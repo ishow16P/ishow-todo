@@ -14,7 +14,6 @@ COPY --from=build /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/templates/default.conf.template
 
 ENV PORT=8080
-ENV API_URL=http://localhost:3000
 
 EXPOSE 8080
 
