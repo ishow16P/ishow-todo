@@ -5,7 +5,21 @@
       <div class="flex items-center justify-between max-w-full">
         <div class="flex items-center gap-2 sm:gap-3 min-w-0">
           <router-link to="/" class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition shrink-0">&larr;</router-link>
-          <h1 class="text-base sm:text-lg font-bold text-gray-800 dark:text-white truncate">{{ project?.name }}</h1>
+          <input
+            v-if="editingName"
+            ref="nameInputRef"
+            v-model="editNameValue"
+            @keydown.enter="saveName"
+            @keydown.escape="editingName = false"
+            @blur="saveName"
+            class="text-base sm:text-lg font-bold text-gray-800 dark:text-white bg-transparent border-b-2 border-indigo-500 outline-none min-w-0"
+          />
+          <h1
+            v-else
+            class="text-base sm:text-lg font-bold text-gray-800 dark:text-white truncate"
+            :class="{ 'cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400': isOwner }"
+            @click="startEditName"
+          >{{ project?.name }}</h1>
         </div>
         <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
           <button
@@ -181,7 +195,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch, onMounted, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 import draggable from 'vuedraggable'
 import { useProjectStore } from '../stores/projects'
@@ -204,6 +218,9 @@ const showInvite = ref(false)
 const viewingTask = ref(null)
 const editingTask = ref(null)
 const editForm = ref({ title: '', description: '', assignee: '', startDate: '', endDate: '' })
+const editingName = ref(false)
+const editNameValue = ref('')
+const nameInputRef = ref(null)
 
 const project = computed(() => projectStore.currentProject)
 const isOwner = computed(() => project.value?.owner?._id === auth.user?._id)
@@ -221,6 +238,22 @@ watch(
 
 function getTasksByStatus(statusName) {
   return taskStore.getTasksByStatus(statusName)
+}
+
+async function startEditName() {
+  if (!isOwner.value) return
+  editNameValue.value = project.value?.name || ''
+  editingName.value = true
+  await nextTick()
+  nameInputRef.value?.select()
+}
+
+async function saveName() {
+  if (!editingName.value) return
+  editingName.value = false
+  const trimmed = editNameValue.value.trim()
+  if (!trimmed || trimmed === project.value?.name) return
+  await projectStore.updateProject(projectId, { name: trimmed })
 }
 
 async function refreshBoard() {
