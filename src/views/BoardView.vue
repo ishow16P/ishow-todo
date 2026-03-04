@@ -1,10 +1,10 @@
 <template>
   <div class="h-[calc(100vh-56px)] flex flex-col">
     <!-- Board header -->
-    <div class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-3 sm:px-6 py-3 transition-colors">
+    <div class="bg-white dark:bg-neutral-800 border-b border-neutral-200/70 dark:border-neutral-700/50 px-3 sm:px-6 py-3 transition-colors">
       <div class="flex items-center justify-between max-w-full">
         <div class="flex items-center gap-2 sm:gap-3 min-w-0">
-          <router-link to="/" class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition shrink-0">&larr;</router-link>
+          <router-link to="/" class="text-neutral-400 dark:text-neutral-500 hover:text-neutral-600 dark:hover:text-neutral-300 transition shrink-0">&larr;</router-link>
           <input
             v-if="editingName"
             ref="nameInputRef"
@@ -12,26 +12,26 @@
             @keydown.enter="saveName"
             @keydown.escape="editingName = false"
             @blur="saveName"
-            class="text-base sm:text-lg font-bold text-gray-800 dark:text-white bg-transparent border-b-2 border-indigo-500 outline-none min-w-0"
+            class="text-base sm:text-lg font-bold text-neutral-800 dark:text-white bg-transparent border-b-2 border-blue-400 outline-none min-w-0"
           />
           <h1
             v-else
-            class="text-base sm:text-lg font-bold text-gray-800 dark:text-white truncate"
-            :class="{ 'cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400': isOwner }"
+            class="text-base sm:text-lg font-bold text-neutral-800 dark:text-white truncate"
+            :class="{ 'cursor-pointer hover:text-blue-600 dark:hover:text-blue-400': isOwner }"
             @click="startEditName"
           >{{ project?.name }}</h1>
         </div>
         <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
           <button
             @click="showInvite = true"
-            class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-600 px-2 sm:px-3 py-1.5 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition cursor-pointer"
+            class="text-xs sm:text-sm text-neutral-600 dark:text-neutral-300 border border-neutral-200/70 dark:border-neutral-700/50 px-2 sm:px-3 py-1.5 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-700 transition cursor-pointer"
           >
             <span class="hidden sm:inline">สมาชิก </span>({{ project?.members?.length || 0 }})
           </button>
           <button
             v-if="isOwner"
             @click="showAddStatus = true"
-            class="text-xs sm:text-sm bg-indigo-600 text-white px-2 sm:px-3 py-1.5 rounded-lg hover:bg-indigo-700 transition cursor-pointer"
+            class="text-xs sm:text-sm bg-neutral-800 dark:bg-neutral-100 text-white dark:text-neutral-900 px-2 sm:px-3 py-1.5 rounded-lg hover:bg-neutral-900 dark:hover:bg-neutral-200 transition cursor-pointer"
           >
             + <span class="hidden sm:inline">สถานะ</span>
           </button>
@@ -40,7 +40,7 @@
     </div>
 
     <!-- Loading -->
-    <div v-if="loading" class="flex-1 flex items-center justify-center text-gray-400 dark:text-gray-500">กำลังโหลด...</div>
+    <div v-if="loading" class="flex-1 flex items-center justify-center text-neutral-400 dark:text-neutral-500">กำลังโหลด...</div>
 
     <!-- Board columns -->
     <div v-else class="flex-1 overflow-x-auto p-3 sm:p-4">
@@ -87,11 +87,11 @@
     />
 
     <!-- View Task Detail Modal -->
-    <div v-if="viewingTask" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" @click.self="viewingTask = null">
-      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-5 sm:p-6 w-full max-w-lg max-h-[80vh] overflow-y-auto">
+    <div v-if="viewingTask" class="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4" @click.self="viewingTask = null">
+      <div class="bg-white dark:bg-neutral-800 rounded-xl shadow-lg border border-neutral-200/70 dark:border-neutral-700/50 p-5 sm:p-6 w-full max-w-lg max-h-[80vh] overflow-y-auto">
         <div class="flex items-start justify-between gap-3 mb-4">
-          <h2 class="text-lg font-bold text-gray-800 dark:text-white">{{ viewingTask.title }}</h2>
-          <button @click="viewingTask = null" class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 text-xl leading-none cursor-pointer shrink-0">&times;</button>
+          <h2 class="text-lg font-bold text-neutral-800 dark:text-white">{{ viewingTask.title }}</h2>
+          <button @click="viewingTask = null" class="text-neutral-400 dark:text-neutral-500 hover:text-neutral-600 dark:hover:text-neutral-300 text-xl leading-none cursor-pointer shrink-0">&times;</button>
         </div>
 
         <div class="flex flex-wrap items-center gap-2 mb-4">
@@ -99,14 +99,14 @@
             <span class="w-2 h-2 rounded-full" :style="{ backgroundColor: getStatusColor(viewingTask.status) }"></span>
             {{ viewingTask.status }}
           </span>
-          <span v-if="viewingTask.assignee" class="inline-flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2.5 py-1 rounded-full">
-            <span class="w-4 h-4 rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-[9px] font-bold">{{ viewingTask.assignee.name?.charAt(0).toUpperCase() }}</span>
+          <span v-if="viewingTask.assignee" class="inline-flex items-center gap-1.5 text-xs text-neutral-500 dark:text-neutral-400 bg-neutral-100 dark:bg-neutral-700 px-2.5 py-1 rounded-full">
+            <span class="w-4 h-4 rounded-full bg-neutral-200 dark:bg-neutral-600 text-neutral-600 dark:text-neutral-300 flex items-center justify-center text-[9px] font-bold">{{ viewingTask.assignee.name?.charAt(0).toUpperCase() }}</span>
             {{ viewingTask.assignee.name }}
           </span>
         </div>
 
         <!-- Dates -->
-        <div v-if="viewingTask.startDate || viewingTask.endDate" class="flex flex-wrap items-center gap-3 mb-4 text-xs text-gray-500 dark:text-gray-400">
+        <div v-if="viewingTask.startDate || viewingTask.endDate" class="flex flex-wrap items-center gap-3 mb-4 text-xs text-neutral-500 dark:text-neutral-400">
           <span v-if="viewingTask.startDate" class="inline-flex items-center gap-1">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
             เริ่ม: {{ formatDate(viewingTask.startDate) }}
@@ -117,17 +117,17 @@
           </span>
         </div>
 
-        <div v-if="viewingTask.description && viewingTask.description !== '<p></p>'" class="task-detail-desc text-sm text-gray-700 dark:text-gray-300 leading-relaxed" v-html="viewingTask.description"></div>
-        <p v-else class="text-sm text-gray-400 dark:text-gray-500 italic">ไม่มีรายละเอียด</p>
+        <div v-if="viewingTask.description && viewingTask.description !== '<p></p>'" class="task-detail-desc text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed" v-html="viewingTask.description"></div>
+        <p v-else class="text-sm text-neutral-400 dark:text-neutral-500 italic">ไม่มีรายละเอียด</p>
 
-        <div class="flex justify-end gap-2 mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+        <div class="flex justify-end gap-2 mt-6 pt-4 border-t border-neutral-200/70 dark:border-neutral-700/50">
           <button
             @click="switchToEdit"
-            class="text-sm text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-600 px-3 py-1.5 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition cursor-pointer"
+            class="text-sm text-neutral-600 dark:text-neutral-300 border border-neutral-200/70 dark:border-neutral-700/50 px-3 py-1.5 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-700 transition cursor-pointer"
           >
             แก้ไข
           </button>
-          <button @click="viewingTask = null" class="text-sm bg-indigo-600 text-white px-4 py-1.5 rounded-lg hover:bg-indigo-700 transition cursor-pointer">
+          <button @click="viewingTask = null" class="text-sm bg-neutral-800 dark:bg-neutral-100 text-white dark:text-neutral-900 px-4 py-1.5 rounded-lg hover:bg-neutral-900 dark:hover:bg-neutral-200 transition cursor-pointer">
             ปิด
           </button>
         </div>
@@ -135,56 +135,56 @@
     </div>
 
     <!-- Edit Task Modal -->
-    <div v-if="editingTask" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" @click.self="editingTask = null">
-      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-5 sm:p-6 w-full max-w-md">
-        <h2 class="text-lg font-bold text-gray-800 dark:text-white mb-4">แก้ไข Task</h2>
+    <div v-if="editingTask" class="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4" @click.self="editingTask = null">
+      <div class="bg-white dark:bg-neutral-800 rounded-xl shadow-lg border border-neutral-200/70 dark:border-neutral-700/50 p-5 sm:p-6 w-full max-w-md">
+        <h2 class="text-lg font-bold text-neutral-800 dark:text-white mb-4">แก้ไข Task</h2>
         <form @submit.prevent="handleUpdateTask" class="space-y-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ชื่อ</label>
+            <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">ชื่อ</label>
             <input
               v-model="editForm.title"
               type="text"
               required
-              class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+              class="w-full border border-neutral-200/70 dark:border-neutral-700/50 bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-400/40 focus:border-blue-400 outline-none"
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">รายละเอียด</label>
+            <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">รายละเอียด</label>
             <RichTextEditor v-model="editForm.description" placeholder="พิมพ์รายละเอียด..." />
           </div>
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">วันเริ่มต้น</label>
+              <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">วันเริ่มต้น</label>
               <input
                 v-model="editForm.startDate"
                 type="date"
-                class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+                class="w-full border border-neutral-200/70 dark:border-neutral-700/50 bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400/40 focus:border-blue-400 outline-none"
               />
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">วันสิ้นสุด</label>
+              <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">วันสิ้นสุด</label>
               <input
                 v-model="editForm.endDate"
                 type="date"
-                class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+                class="w-full border border-neutral-200/70 dark:border-neutral-700/50 bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400/40 focus:border-blue-400 outline-none"
               />
             </div>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ผู้รับผิดชอบ</label>
+            <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">ผู้รับผิดชอบ</label>
             <select
               v-model="editForm.assignee"
-              class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+              class="w-full border border-neutral-200/70 dark:border-neutral-700/50 bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-400/40 focus:border-blue-400 outline-none"
             >
               <option value="">ไม่ระบุ</option>
               <option v-for="m in project?.members" :key="m._id" :value="m._id">{{ m.name }}</option>
             </select>
           </div>
           <div class="flex justify-end gap-3">
-            <button type="button" @click="editingTask = null" class="px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 cursor-pointer">
+            <button type="button" @click="editingTask = null" class="px-4 py-2 text-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 cursor-pointer">
               ยกเลิก
             </button>
-            <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition cursor-pointer">
+            <button type="submit" class="bg-neutral-800 dark:bg-neutral-100 text-white dark:text-neutral-900 px-4 py-2 rounded-lg text-sm font-medium hover:bg-neutral-900 dark:hover:bg-neutral-200 transition cursor-pointer">
               บันทึก
             </button>
           </div>
@@ -197,6 +197,7 @@
 <script setup>
 import { ref, computed, watch, onMounted, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
+import Swal from 'sweetalert2'
 import draggable from 'vuedraggable'
 import { useProjectStore } from '../stores/projects'
 import { useTaskStore } from '../stores/tasks'
@@ -336,11 +337,24 @@ async function handleDeleteTask(taskId) {
 }
 
 async function handleDeleteStatus(status) {
-  if (!confirm(`ลบสถานะ "${status.name}"? (ต้องไม่มี task อยู่ในสถานะนี้)`)) return
+  const { isConfirmed } = await Swal.fire({
+    title: 'ลบสถานะ?',
+    text: `"${status.name}" (ต้องไม่มี task อยู่ในสถานะนี้)`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#ef4444',
+    confirmButtonText: 'ลบเลย',
+    cancelButtonText: 'ยกเลิก',
+  })
+  if (!isConfirmed) return
   try {
     await projectStore.deleteStatus(projectId, status._id)
   } catch (err) {
-    alert(err.response?.data?.message || 'ลบสถานะไม่สำเร็จ')
+    Swal.fire({
+      title: 'เกิดข้อผิดพลาด',
+      text: err.response?.data?.message || 'ลบสถานะไม่สำเร็จ',
+      icon: 'error',
+    })
   }
 }
 </script>
@@ -353,10 +367,10 @@ async function handleDeleteStatus(status) {
 .task-detail-desc s { text-decoration: line-through; }
 .task-detail-desc ul { list-style-type: disc; padding-left: 1.5em; margin: 0.3em 0; }
 .task-detail-desc ol { list-style-type: decimal; padding-left: 1.5em; margin: 0.3em 0; }
-.task-detail-desc blockquote { border-left: 3px solid #d1d5db; padding-left: 0.75em; margin: 0.3em 0; color: #6b7280; }
-.dark .task-detail-desc blockquote { border-left-color: #4b5563; color: #9ca3af; }
-.task-detail-desc pre { background: #f3f4f6; border-radius: 0.375rem; padding: 0.5em 0.75em; margin: 0.3em 0; font-family: monospace; font-size: 0.9em; overflow-x: auto; }
-.dark .task-detail-desc pre { background: #1f2937; }
-.task-detail-desc code { background: #f3f4f6; border-radius: 0.25rem; padding: 0.1em 0.3em; font-size: 0.9em; }
-.dark .task-detail-desc code { background: #1f2937; }
+.task-detail-desc blockquote { border-left: 3px solid #d6d3d1; padding-left: 0.75em; margin: 0.3em 0; color: #78716c; }
+.dark .task-detail-desc blockquote { border-left-color: #57534e; color: #a8a29e; }
+.task-detail-desc pre { background: #f5f5f4; border-radius: 0.375rem; padding: 0.5em 0.75em; margin: 0.3em 0; font-family: monospace; font-size: 0.9em; overflow-x: auto; }
+.dark .task-detail-desc pre { background: #292524; }
+.task-detail-desc code { background: #f5f5f4; border-radius: 0.25rem; padding: 0.1em 0.3em; font-size: 0.9em; }
+.dark .task-detail-desc code { background: #292524; }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
+  <div class="min-h-screen bg-stone-50 dark:bg-neutral-900 antialiased transition-colors">
     <Navbar v-if="auth.isAuthenticated" />
     <router-view />
   </div>

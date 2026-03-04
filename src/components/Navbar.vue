@@ -1,8 +1,9 @@
 <template>
-  <nav class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm transition-colors">
+  <nav class="bg-white dark:bg-neutral-800 border-b border-neutral-200/70 dark:border-neutral-700/50 transition-colors">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between h-14 items-center">
-        <router-link to="/" class="text-lg font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition">
+        <router-link to="/" class="flex items-center gap-2 text-lg font-semibold text-neutral-800 dark:text-neutral-100 hover:text-neutral-600 dark:hover:text-neutral-300 transition">
+          <img src="/bapho.png" alt="logo" class="w-7 h-7 rounded-full object-cover" />
           ishow-todos
         </router-link>
 
@@ -10,7 +11,7 @@
           <!-- Theme toggle -->
           <button
             @click="theme.toggle()"
-            class="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer"
+            class="p-2 rounded-lg text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition cursor-pointer"
             :title="theme.dark ? 'สลับเป็น Light' : 'สลับเป็น Dark'"
           >
             <svg v-if="theme.dark" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -21,10 +22,10 @@
             </svg>
           </button>
 
-          <span class="text-sm text-gray-600 dark:text-gray-300 hidden sm:inline">{{ auth.user?.name }}</span>
+          <span class="text-sm text-neutral-600 dark:text-neutral-300 hidden sm:inline">{{ auth.user?.name }}</span>
           <button
             @click="handleLogout"
-            class="text-sm text-gray-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition cursor-pointer"
+            class="text-sm text-neutral-500 dark:text-neutral-400 hover:text-red-600 dark:hover:text-red-400 transition cursor-pointer"
           >
             ออกจากระบบ
           </button>

@@ -1,3 +1,30 @@
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* SweetAlert2 dark mode */
+.dark .swal2-popup {
+  background: #262626;
+  color: #f5f5f5;
+}
+.dark .swal2-title {
+  color: #f5f5f5;
+}
+.dark .swal2-html-container {
+  color: #a3a3a3;
+}
+.dark .swal2-confirm {
+  font-weight: 500;
+}
+.dark .swal2-cancel {
+  background: #404040 !important;
+  color: #d4d4d4 !important;
+  font-weight: 500;
+}

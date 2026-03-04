@@ -1,7 +1,7 @@
 <template>
-  <div class="rich-editor border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden bg-white dark:bg-gray-700 transition-colors" :class="{ 'ring-2 ring-indigo-500 border-indigo-500': isFocused }">
+  <div class="rich-editor border border-neutral-200/70 dark:border-neutral-700/50 rounded-lg overflow-hidden bg-white dark:bg-neutral-700 transition-colors" :class="{ 'ring-2 ring-blue-400/40 border-blue-400': isFocused }">
     <!-- Toolbar -->
-    <div class="flex flex-wrap items-center gap-0.5 px-2 py-1.5 border-b border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-800/50">
+    <div class="flex flex-wrap items-center gap-0.5 px-2 py-1.5 border-b border-neutral-200/70 dark:border-neutral-700/50 bg-neutral-50 dark:bg-neutral-800/50">
       <button
         type="button"
         @click="editor?.chain().focus().toggleBold().run()"
@@ -35,7 +35,7 @@
         <span class="line-through">S</span>
       </button>
 
-      <div class="w-px h-5 bg-gray-300 dark:bg-gray-600 mx-1"></div>
+      <div class="w-px h-5 bg-neutral-300 dark:bg-neutral-600 mx-1"></div>
 
       <button
         type="button"
@@ -54,7 +54,7 @@
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="10" y1="6" x2="20" y2="6"/><line x1="10" y1="12" x2="20" y2="12"/><line x1="10" y1="18" x2="20" y2="18"/><text x="3" y="8" font-size="7" fill="currentColor" stroke="none" font-family="sans-serif">1</text><text x="3" y="14" font-size="7" fill="currentColor" stroke="none" font-family="sans-serif">2</text><text x="3" y="20" font-size="7" fill="currentColor" stroke="none" font-family="sans-serif">3</text></svg>
       </button>
 
-      <div class="w-px h-5 bg-gray-300 dark:bg-gray-600 mx-1"></div>
+      <div class="w-px h-5 bg-neutral-300 dark:bg-neutral-600 mx-1"></div>
 
       <button
         type="button"
@@ -75,7 +75,7 @@
     </div>
 
     <!-- Editor content -->
-    <editor-content :editor="editor" class="prose-editor px-3 py-2 min-h-[80px] max-h-[200px] overflow-y-auto text-sm text-gray-900 dark:text-white" />
+    <editor-content :editor="editor" class="prose-editor px-3 py-2 min-h-[80px] max-h-[200px] overflow-y-auto text-sm text-neutral-900 dark:text-white" />
   </div>
 </template>
 
@@ -132,8 +132,8 @@ function btnClass(active) {
   return [
     'w-7 h-7 flex items-center justify-center rounded text-xs font-medium cursor-pointer transition',
     active
-      ? 'bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300'
-      : 'text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700',
+      ? 'bg-neutral-200 dark:bg-neutral-600 text-neutral-800 dark:text-neutral-200'
+      : 'text-neutral-500 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700',
   ]
 }
 </script>
@@ -142,12 +142,12 @@ function btnClass(active) {
 .prose-editor .tiptap p.is-editor-empty:first-child::before {
   content: attr(data-placeholder);
   float: left;
-  color: #9ca3af;
+  color: #a8a29e;
   pointer-events: none;
   height: 0;
 }
 .dark .prose-editor .tiptap p.is-editor-empty:first-child::before {
-  color: #6b7280;
+  color: #78716c;
 }
 .prose-editor .tiptap {
   outline: none;
@@ -167,17 +167,17 @@ function btnClass(active) {
   list-style-type: decimal;
 }
 .prose-editor .tiptap blockquote {
-  border-left: 3px solid #d1d5db;
+  border-left: 3px solid #d6d3d1;
   padding-left: 0.75em;
   margin: 0.25em 0;
-  color: #6b7280;
+  color: #78716c;
 }
 .dark .prose-editor .tiptap blockquote {
-  border-left-color: #4b5563;
-  color: #9ca3af;
+  border-left-color: #57534e;
+  color: #a8a29e;
 }
 .prose-editor .tiptap pre {
-  background: #f3f4f6;
+  background: #f5f5f4;
   border-radius: 0.375rem;
   padding: 0.5em 0.75em;
   margin: 0.25em 0;
@@ -185,15 +185,15 @@ function btnClass(active) {
   font-size: 0.85em;
 }
 .dark .prose-editor .tiptap pre {
-  background: #1f2937;
+  background: #292524;
 }
 .prose-editor .tiptap code {
-  background: #f3f4f6;
+  background: #f5f5f4;
   border-radius: 0.25rem;
   padding: 0.1em 0.3em;
   font-size: 0.85em;
 }
 .dark .prose-editor .tiptap code {
-  background: #1f2937;
+  background: #292524;
 }
 </style>

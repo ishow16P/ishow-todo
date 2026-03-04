@@ -1,9 +1,9 @@
 <template>
-  <div class="flex-shrink-0 w-64 sm:w-72 bg-gray-100 dark:bg-gray-800/60 rounded-xl flex flex-col max-h-[calc(100vh-180px)] border border-transparent dark:border-gray-700/50 transition-colors">
+  <div class="flex-shrink-0 w-64 sm:w-72 bg-stone-100/50 dark:bg-neutral-800/60 rounded-lg flex flex-col max-h-[calc(100vh-180px)] border border-neutral-200/70 dark:border-neutral-700/50 transition-colors">
     <!-- Column header -->
-    <div class="flex items-center justify-between px-3 py-2.5 border-b border-gray-200 dark:border-gray-700">
+    <div class="flex items-center justify-between px-3 py-2.5 border-b border-neutral-200/70 dark:border-neutral-700/50">
       <div class="flex items-center gap-2 min-w-0">
-        <div class="column-drag-handle cursor-grab active:cursor-grabbing text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 transition shrink-0" title="ลากเพื่อสลับตำแหน่ง">
+        <div class="column-drag-handle cursor-grab active:cursor-grabbing text-neutral-300 dark:text-neutral-600 hover:text-neutral-500 dark:hover:text-neutral-400 transition shrink-0" title="ลากเพื่อสลับตำแหน่ง">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
             <circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/>
             <circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/>
@@ -11,13 +11,13 @@
           </svg>
         </div>
         <div class="w-3 h-3 rounded-full shrink-0" :style="{ backgroundColor: status.color }"></div>
-        <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200 truncate">{{ status.name }}</h3>
-        <span class="text-xs text-gray-400 dark:text-gray-500 bg-gray-200 dark:bg-gray-700 rounded-full px-1.5 py-0.5 shrink-0">{{ tasks.length }}</span>
+        <h3 class="text-sm font-semibold text-neutral-700 dark:text-neutral-200 truncate">{{ status.name }}</h3>
+        <span class="text-xs text-neutral-400 dark:text-neutral-500 bg-neutral-200/70 dark:bg-neutral-700 rounded-full px-1.5 py-0.5 shrink-0">{{ tasks.length }}</span>
       </div>
       <button
         v-if="isOwner"
         @click="$emit('deleteStatus', status)"
-        class="text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 text-sm cursor-pointer transition shrink-0 ml-1"
+        class="text-neutral-400 dark:text-neutral-500 hover:text-red-500 dark:hover:text-red-400 text-sm cursor-pointer transition shrink-0 ml-1"
         title="ลบสถานะ"
       >
         &times;
@@ -48,58 +48,58 @@
     </div>
 
     <!-- Add task button -->
-    <div class="p-2 border-t border-gray-200 dark:border-gray-700">
+    <div class="p-2 border-t border-neutral-200/70 dark:border-neutral-700/50">
       <button
         @click="showAdd = true"
-        class="w-full text-left text-sm text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 py-1 cursor-pointer transition"
+        class="w-full text-left text-sm text-neutral-400 dark:text-neutral-500 hover:text-neutral-600 dark:hover:text-neutral-300 py-1 cursor-pointer transition"
       >
         + เพิ่ม task
       </button>
     </div>
 
     <!-- Add task modal -->
-    <div v-if="showAdd" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" @click.self="showAdd = false">
-      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-5 sm:p-6 w-full max-w-md">
-        <h2 class="text-lg font-bold text-gray-800 dark:text-white mb-4">เพิ่ม Task ใน {{ status.name }}</h2>
+    <div v-if="showAdd" class="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4" @click.self="showAdd = false">
+      <div class="bg-white dark:bg-neutral-800 rounded-xl shadow-lg border border-neutral-200/70 dark:border-neutral-700/50 p-5 sm:p-6 w-full max-w-md">
+        <h2 class="text-lg font-bold text-neutral-800 dark:text-white mb-4">เพิ่ม Task ใน {{ status.name }}</h2>
         <form @submit.prevent="handleAdd" class="space-y-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ชื่อ</label>
+            <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">ชื่อ</label>
             <input
               v-model="newTitle"
               type="text"
               ref="addInput"
               required
               placeholder="ชื่อ task..."
-              class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+              class="w-full border border-neutral-200/70 dark:border-neutral-700/50 bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400/40 focus:border-blue-400 outline-none"
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">รายละเอียด</label>
+            <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">รายละเอียด</label>
             <RichTextEditor v-model="newDescription" placeholder="พิมพ์รายละเอียด..." />
           </div>
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">วันเริ่มต้น</label>
+              <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">วันเริ่มต้น</label>
               <input
                 v-model="newStartDate"
                 type="date"
-                class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+                class="w-full border border-neutral-200/70 dark:border-neutral-700/50 bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400/40 focus:border-blue-400 outline-none"
               />
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">วันสิ้นสุด</label>
+              <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">วันสิ้นสุด</label>
               <input
                 v-model="newEndDate"
                 type="date"
-                class="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+                class="w-full border border-neutral-200/70 dark:border-neutral-700/50 bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400/40 focus:border-blue-400 outline-none"
               />
             </div>
           </div>
           <div class="flex justify-end gap-3">
-            <button type="button" @click="showAdd = false" class="px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 cursor-pointer">
+            <button type="button" @click="showAdd = false" class="px-4 py-2 text-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 cursor-pointer">
               ยกเลิก
             </button>
-            <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition cursor-pointer">
+            <button type="submit" class="bg-neutral-800 dark:bg-neutral-100 text-white dark:text-neutral-900 px-4 py-2 rounded-lg text-sm font-medium hover:bg-neutral-900 dark:hover:bg-neutral-200 transition cursor-pointer">
               เพิ่ม
             </button>
           </div>

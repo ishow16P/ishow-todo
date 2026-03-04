@@ -1,7 +1,7 @@
 <template>
-  <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" @click.self="$emit('close')">
-    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-5 sm:p-6 w-full max-w-md">
-      <h2 class="text-lg font-bold text-gray-800 dark:text-white mb-4">จัดการสมาชิก</h2>
+  <div class="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4" @click.self="$emit('close')">
+    <div class="bg-white dark:bg-neutral-800 rounded-xl shadow-lg border border-neutral-200/70 dark:border-neutral-700/50 p-5 sm:p-6 w-full max-w-md">
+      <h2 class="text-lg font-bold text-neutral-800 dark:text-white mb-4">จัดการสมาชิก</h2>
 
       <!-- Invite form -->
       <form @submit.prevent="handleInvite" class="flex gap-2 mb-6">
@@ -10,12 +10,12 @@
           type="email"
           required
           placeholder="อีเมลที่ต้องการเชิญ"
-          class="flex-1 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+          class="flex-1 border border-neutral-200/70 dark:border-neutral-700/50 bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400/40 focus:border-blue-400 outline-none"
         />
         <button
           type="submit"
           :disabled="inviting"
-          class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition disabled:opacity-50 shrink-0 cursor-pointer"
+          class="bg-neutral-800 dark:bg-neutral-100 text-white dark:text-neutral-900 px-4 py-2 rounded-lg text-sm font-medium hover:bg-neutral-900 dark:hover:bg-neutral-200 transition disabled:opacity-50 shrink-0 cursor-pointer"
         >
           เชิญ
         </button>
@@ -29,14 +29,14 @@
         <div
           v-for="member in project.members"
           :key="member._id"
-          class="flex items-center justify-between bg-gray-50 dark:bg-gray-700/50 rounded-lg px-3 py-2"
+          class="flex items-center justify-between bg-neutral-50 dark:bg-neutral-700/50 rounded-lg px-3 py-2"
         >
           <div>
-            <p class="text-sm font-medium text-gray-800 dark:text-gray-100">{{ member.name }}</p>
-            <p class="text-xs text-gray-500 dark:text-gray-400">{{ member.email }}</p>
+            <p class="text-sm font-medium text-neutral-800 dark:text-neutral-100">{{ member.name }}</p>
+            <p class="text-xs text-neutral-500 dark:text-neutral-400">{{ member.email }}</p>
           </div>
           <div class="flex items-center gap-2">
-            <span v-if="member._id === project.owner._id" class="text-xs text-indigo-600 dark:text-indigo-400 font-medium">เจ้าของ</span>
+            <span v-if="member._id === project.owner._id" class="text-xs text-blue-600 dark:text-blue-400 font-medium">เจ้าของ</span>
             <button
               v-else-if="isOwner"
               @click="handleRemove(member._id)"
@@ -49,7 +49,7 @@
       </div>
 
       <div class="flex justify-end mt-4">
-        <button @click="$emit('close')" class="px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 cursor-pointer">
+        <button @click="$emit('close')" class="px-4 py-2 text-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 cursor-pointer">
           ปิด
         </button>
       </div>
