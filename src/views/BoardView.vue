@@ -43,15 +43,15 @@
     <div v-if="loading" class="flex-1 flex items-center justify-center text-neutral-400 dark:text-neutral-500">กำลังโหลด...</div>
 
     <!-- Board columns -->
-    <div v-else class="flex-1 overflow-x-auto p-3 sm:p-4">
+    <div v-else class="flex-1 overflow-x-auto sm:overflow-x-auto overflow-y-auto p-3 sm:p-4">
       <draggable
         v-model="draggableStatuses"
         item-key="_id"
         :group="{ name: 'columns' }"
         ghost-class="opacity-30"
         handle=".column-drag-handle"
-        direction="horizontal"
-        class="flex gap-3 sm:gap-4 h-full"
+        :direction="isMobile ? 'vertical' : 'horizontal'"
+        class="flex flex-col sm:flex-row gap-3 sm:gap-4 sm:h-full"
         @end="onColumnDragEnd"
       >
         <template #item="{ element: status }">
@@ -195,7 +195,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted, nextTick } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 import Swal from 'sweetalert2'
 import draggable from 'vuedraggable'
@@ -214,6 +214,10 @@ const auth = useAuthStore()
 
 const projectId = route.params.id
 const loading = ref(true)
+const isMobile = ref(window.innerWidth < 640)
+function onResize() { isMobile.value = window.innerWidth < 640 }
+window.addEventListener('resize', onResize)
+onUnmounted(() => window.removeEventListener('resize', onResize))
 const showAddStatus = ref(false)
 const showInvite = ref(false)
 const viewingTask = ref(null)

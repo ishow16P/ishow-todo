@@ -1,5 +1,5 @@
 <template>
-  <div class="flex-shrink-0 w-64 sm:w-72 bg-stone-100/50 dark:bg-neutral-800/60 rounded-lg flex flex-col max-h-[calc(100vh-180px)] border border-neutral-200/70 dark:border-neutral-700/50 transition-colors">
+  <div class="w-full sm:flex-shrink-0 sm:w-72 bg-stone-100/50 dark:bg-neutral-800/60 rounded-lg flex flex-col sm:max-h-[calc(100vh-180px)] border border-neutral-200/70 dark:border-neutral-700/50 transition-colors">
     <!-- Column header -->
     <div class="flex items-center justify-between px-3 py-2.5 border-b border-neutral-200/70 dark:border-neutral-700/50">
       <div class="flex items-center gap-2 min-w-0">
