@@ -120,16 +120,24 @@
         <div v-if="viewingTask.description && viewingTask.description !== '<p></p>'" class="task-detail-desc text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed" v-html="viewingTask.description"></div>
         <p v-else class="text-sm text-neutral-400 dark:text-neutral-500 italic">ไม่มีรายละเอียด</p>
 
-        <div class="flex justify-end gap-2 mt-6 pt-4 border-t border-neutral-200/70 dark:border-neutral-700/50">
+        <div class="flex items-center justify-between mt-6 pt-4 border-t border-neutral-200/70 dark:border-neutral-700/50">
           <button
-            @click="switchToEdit"
-            class="text-sm text-neutral-600 dark:text-neutral-300 border border-neutral-200/70 dark:border-neutral-700/50 px-3 py-1.5 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-700 transition cursor-pointer"
+            @click="handleDeleteFromView"
+            class="text-sm text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition cursor-pointer"
           >
-            แก้ไข
+            ลบ
           </button>
-          <button @click="viewingTask = null" class="text-sm bg-neutral-800 dark:bg-neutral-100 text-white dark:text-neutral-900 px-4 py-1.5 rounded-lg hover:bg-neutral-900 dark:hover:bg-neutral-200 transition cursor-pointer">
-            ปิด
-          </button>
+          <div class="flex gap-2">
+            <button
+              @click="switchToEdit"
+              class="text-sm text-neutral-600 dark:text-neutral-300 border border-neutral-200/70 dark:border-neutral-700/50 px-3 py-1.5 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-700 transition cursor-pointer"
+            >
+              แก้ไข
+            </button>
+            <button @click="viewingTask = null" class="text-sm bg-neutral-800 dark:bg-neutral-100 text-white dark:text-neutral-900 px-4 py-1.5 rounded-lg hover:bg-neutral-900 dark:hover:bg-neutral-200 transition cursor-pointer">
+              ปิด
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -152,21 +160,29 @@
             <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">รายละเอียด</label>
             <RichTextEditor v-model="editForm.description" placeholder="พิมพ์รายละเอียด..." />
           </div>
-          <div class="grid grid-cols-2 gap-3">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">วันเริ่มต้น</label>
-              <input
+              <VueDatePicker
                 v-model="editForm.startDate"
-                type="date"
-                class="w-full border border-neutral-200/70 dark:border-neutral-700/50 bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400/40 focus:border-blue-400 outline-none"
+                :dark="isDark"
+                :enable-time-picker="false"
+                auto-apply
+                placeholder="เลือกวันเริ่มต้น"
+                format="dd/MM/yyyy"
+                input-class-name="dp-input"
               />
             </div>
             <div>
               <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">วันสิ้นสุด</label>
-              <input
+              <VueDatePicker
                 v-model="editForm.endDate"
-                type="date"
-                class="w-full border border-neutral-200/70 dark:border-neutral-700/50 bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400/40 focus:border-blue-400 outline-none"
+                :dark="isDark"
+                :enable-time-picker="false"
+                auto-apply
+                placeholder="เลือกวันสิ้นสุด"
+                format="dd/MM/yyyy"
+                input-class-name="dp-input"
               />
             </div>
           </div>
@@ -199,9 +215,12 @@ import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 import Swal from 'sweetalert2'
 import draggable from 'vuedraggable'
+import { VueDatePicker } from '@vuepic/vue-datepicker'
+import '@vuepic/vue-datepicker/dist/main.css'
 import { useProjectStore } from '../stores/projects'
 import { useTaskStore } from '../stores/tasks'
 import { useAuthStore } from '../stores/auth'
+import { useThemeStore } from '../stores/theme'
 import BoardColumn from '../components/BoardColumn.vue'
 import AddStatusModal from '../components/AddStatusModal.vue'
 import InviteMemberModal from '../components/InviteMemberModal.vue'
@@ -211,6 +230,8 @@ const route = useRoute()
 const projectStore = useProjectStore()
 const taskStore = useTaskStore()
 const auth = useAuthStore()
+const themeStore = useThemeStore()
+const isDark = computed(() => themeStore.dark)
 
 const projectId = route.params.id
 const loading = ref(true)
@@ -315,9 +336,10 @@ function isOverdue(task) {
   return new Date(task.endDate) < new Date() && task.status !== 'Done'
 }
 
-function toDateInput(d) {
-  if (!d) return ''
-  return new Date(d).toISOString().slice(0, 10)
+function toISODate(d) {
+  if (!d) return null
+  const date = d instanceof Date ? d : new Date(d)
+  return date.toISOString().slice(0, 10)
 }
 
 function openEditTask(task) {
@@ -326,18 +348,39 @@ function openEditTask(task) {
     title: task.title,
     description: task.description || '',
     assignee: task.assignee?._id || '',
-    startDate: toDateInput(task.startDate),
-    endDate: toDateInput(task.endDate),
+    startDate: task.startDate ? new Date(task.startDate) : null,
+    endDate: task.endDate ? new Date(task.endDate) : null,
   }
 }
 
 async function handleUpdateTask() {
-  await taskStore.updateTask(editingTask.value._id, editForm.value)
+  const payload = {
+    ...editForm.value,
+    startDate: toISODate(editForm.value.startDate),
+    endDate: toISODate(editForm.value.endDate),
+  }
+  await taskStore.updateTask(editingTask.value._id, payload)
   editingTask.value = null
 }
 
 async function handleDeleteTask(taskId) {
   await taskStore.deleteTask(taskId)
+}
+
+async function handleDeleteFromView() {
+  const task = viewingTask.value
+  const { isConfirmed } = await Swal.fire({
+    title: 'ลบ Task?',
+    text: `"${task.title}" จะถูกลบและไม่สามารถกู้คืนได้`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#ef4444',
+    confirmButtonText: 'ลบเลย',
+    cancelButtonText: 'ยกเลิก',
+  })
+  if (!isConfirmed) return
+  await taskStore.deleteTask(task._id)
+  viewingTask.value = null
 }
 
 async function handleDeleteStatus(status) {

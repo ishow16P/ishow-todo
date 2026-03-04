@@ -77,21 +77,29 @@
             <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">รายละเอียด</label>
             <RichTextEditor v-model="newDescription" placeholder="พิมพ์รายละเอียด..." />
           </div>
-          <div class="grid grid-cols-2 gap-3">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">วันเริ่มต้น</label>
-              <input
+              <VueDatePicker
                 v-model="newStartDate"
-                type="date"
-                class="w-full border border-neutral-200/70 dark:border-neutral-700/50 bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400/40 focus:border-blue-400 outline-none"
+                :dark="isDark"
+                :enable-time-picker="false"
+                auto-apply
+                placeholder="เลือกวันเริ่มต้น"
+                format="dd/MM/yyyy"
+                input-class-name="dp-input"
               />
             </div>
             <div>
               <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">วันสิ้นสุด</label>
-              <input
+              <VueDatePicker
                 v-model="newEndDate"
-                type="date"
-                class="w-full border border-neutral-200/70 dark:border-neutral-700/50 bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400/40 focus:border-blue-400 outline-none"
+                :dark="isDark"
+                :enable-time-picker="false"
+                auto-apply
+                placeholder="เลือกวันสิ้นสุด"
+                format="dd/MM/yyyy"
+                input-class-name="dp-input"
               />
             </div>
           </div>
@@ -110,10 +118,16 @@
 </template>
 
 <script setup>
-import { ref, nextTick } from 'vue'
+import { ref, nextTick, computed } from 'vue'
 import draggable from 'vuedraggable'
+import { VueDatePicker } from '@vuepic/vue-datepicker'
+import '@vuepic/vue-datepicker/dist/main.css'
+import { useThemeStore } from '../stores/theme'
 import TaskCard from './TaskCard.vue'
 import RichTextEditor from './RichTextEditor.vue'
+
+const theme = useThemeStore()
+const isDark = computed(() => theme.dark)
 
 const props = defineProps({
   status: { type: Object, required: true },
@@ -130,14 +144,20 @@ const newStartDate = ref('')
 const newEndDate = ref('')
 const addInput = ref(null)
 
+function toISODate(d) {
+  if (!d) return null
+  const date = d instanceof Date ? d : new Date(d)
+  return date.toISOString().slice(0, 10)
+}
+
 function handleAdd() {
   if (!newTitle.value.trim()) return
   const desc = newDescription.value === '<p></p>' ? '' : newDescription.value
   emit('addTask', {
     title: newTitle.value.trim(),
     description: desc,
-    startDate: newStartDate.value || null,
-    endDate: newEndDate.value || null,
+    startDate: toISODate(newStartDate.value),
+    endDate: toISODate(newEndDate.value),
     status: props.status.name,
   })
   newTitle.value = ''

@@ -1,9 +1,11 @@
 <template>
-  <div class="relative bg-white dark:bg-neutral-700 rounded-lg border border-neutral-200/70 dark:border-neutral-600 p-3 hover:bg-neutral-50 dark:hover:bg-neutral-650 transition cursor-grab active:cursor-grabbing group">
+  <div
+    class="relative bg-white dark:bg-neutral-700 rounded-lg border border-neutral-200/70 dark:border-neutral-600 p-3 hover:bg-neutral-50 dark:hover:bg-neutral-600 transition cursor-grab active:cursor-grabbing group"
+    @click="$emit('view', task)"
+  >
     <div class="flex items-start justify-between gap-2">
       <h4
-        class="text-sm font-medium text-neutral-800 dark:text-neutral-100 leading-snug cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition"
-        @click.stop="$emit('view', task)"
+        class="text-sm font-medium text-neutral-800 dark:text-neutral-100 leading-snug"
       >
         {{ task.title }}
       </h4>
