@@ -21,6 +21,12 @@ const routes = [
     meta: { auth: true },
   },
   {
+    path: '/calendar',
+    name: 'Calendar',
+    component: () => import('../views/CalendarView.vue'),
+    meta: { auth: true },
+  },
+  {
     path: '/projects/:id',
     name: 'Board',
     component: () => import('../views/BoardView.vue'),

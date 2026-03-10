@@ -4,6 +4,7 @@ import api from '../services/api'
 
 export const useTaskStore = defineStore('tasks', () => {
   const tasks = ref([])
+  const calendarTasks = ref([])
   const loading = ref(false)
 
   async function fetchTasks(projectId) {
@@ -11,6 +12,19 @@ export const useTaskStore = defineStore('tasks', () => {
     try {
       const { data } = await api.get(`/tasks/project/${projectId}`)
       tasks.value = data
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function fetchCalendarTasks(start, end) {
+    loading.value = true
+    try {
+      const params = {}
+      if (start) params.start = start
+      if (end) params.end = end
+      const { data } = await api.get('/tasks/calendar', { params })
+      calendarTasks.value = data
     } finally {
       loading.value = false
     }
@@ -47,5 +61,5 @@ export const useTaskStore = defineStore('tasks', () => {
       .sort((a, b) => a.order - b.order)
   }
 
-  return { tasks, loading, fetchTasks, createTask, updateTask, moveTask, deleteTask, getTasksByStatus }
+  return { tasks, calendarTasks, loading, fetchTasks, fetchCalendarTasks, createTask, updateTask, moveTask, deleteTask, getTasksByStatus }
 })

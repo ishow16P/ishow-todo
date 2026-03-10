@@ -26,21 +26,21 @@
             @click="showInvite = true"
             class="text-xs sm:text-sm text-neutral-600 dark:text-neutral-300 border border-neutral-200/70 dark:border-neutral-700/50 px-2 sm:px-3 py-1.5 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-700 transition cursor-pointer"
           >
-            <span class="hidden sm:inline">สมาชิก </span>({{ project?.members?.length || 0 }})
+            <span class="hidden sm:inline">{{ t.members }} </span>({{ project?.members?.length || 0 }})
           </button>
           <button
             v-if="isOwner"
             @click="showAddStatus = true"
             class="text-xs sm:text-sm bg-neutral-800 dark:bg-neutral-100 text-white dark:text-neutral-900 px-2 sm:px-3 py-1.5 rounded-lg hover:bg-neutral-900 dark:hover:bg-neutral-200 transition cursor-pointer"
           >
-            + <span class="hidden sm:inline">สถานะ</span>
+            {{ t.addStatus }}
           </button>
         </div>
       </div>
     </div>
 
     <!-- Loading -->
-    <div v-if="loading" class="flex-1 flex items-center justify-center text-neutral-400 dark:text-neutral-500">กำลังโหลด...</div>
+    <div v-if="loading" class="flex-1 flex items-center justify-center text-neutral-400 dark:text-neutral-500">{{ t.loading }}</div>
 
     <!-- Board columns -->
     <div v-else class="flex-1 overflow-x-auto sm:overflow-x-auto overflow-y-auto p-3 sm:p-4">
@@ -109,33 +109,33 @@
         <div v-if="viewingTask.startDate || viewingTask.endDate" class="flex flex-wrap items-center gap-3 mb-4 text-xs text-neutral-500 dark:text-neutral-400">
           <span v-if="viewingTask.startDate" class="inline-flex items-center gap-1">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            เริ่ม: {{ formatDate(viewingTask.startDate) }}
+            {{ t.start }}: {{ formatDate(viewingTask.startDate) }}
           </span>
           <span v-if="viewingTask.endDate" class="inline-flex items-center gap-1" :class="isOverdue(viewingTask) ? 'text-red-500 dark:text-red-400 font-medium' : ''">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            สิ้นสุด: {{ formatDate(viewingTask.endDate) }}
+            {{ t.end }}: {{ formatDate(viewingTask.endDate) }}
           </span>
         </div>
 
         <div v-if="viewingTask.description && viewingTask.description !== '<p></p>'" class="task-detail-desc text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed" v-html="viewingTask.description"></div>
-        <p v-else class="text-sm text-neutral-400 dark:text-neutral-500 italic">ไม่มีรายละเอียด</p>
+        <p v-else class="text-sm text-neutral-400 dark:text-neutral-500 italic">{{ t.noDetails }}</p>
 
         <div class="flex items-center justify-between mt-6 pt-4 border-t border-neutral-200/70 dark:border-neutral-700/50">
           <button
             @click="handleDeleteFromView"
             class="text-sm text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition cursor-pointer"
           >
-            ลบ
+            {{ t.delete }}
           </button>
           <div class="flex gap-2">
             <button
               @click="switchToEdit"
               class="text-sm text-neutral-600 dark:text-neutral-300 border border-neutral-200/70 dark:border-neutral-700/50 px-3 py-1.5 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-700 transition cursor-pointer"
             >
-              แก้ไข
+              {{ t.edit }}
             </button>
             <button @click="viewingTask = null" class="text-sm bg-neutral-800 dark:bg-neutral-100 text-white dark:text-neutral-900 px-4 py-1.5 rounded-lg hover:bg-neutral-900 dark:hover:bg-neutral-200 transition cursor-pointer">
-              ปิด
+              {{ t.close }}
             </button>
           </div>
         </div>
@@ -145,10 +145,10 @@
     <!-- Edit Task Modal -->
     <div v-if="editingTask" class="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4" @click.self="editingTask = null">
       <div class="bg-white dark:bg-neutral-800 rounded-xl shadow-lg border border-neutral-200/70 dark:border-neutral-700/50 p-5 sm:p-6 w-full max-w-md">
-        <h2 class="text-lg font-bold text-neutral-800 dark:text-white mb-4">แก้ไข Task</h2>
+        <h2 class="text-lg font-bold text-neutral-800 dark:text-white mb-4">{{ t.editTask }}</h2>
         <form @submit.prevent="handleUpdateTask" class="space-y-4">
           <div>
-            <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">ชื่อ</label>
+            <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">{{ t.title }}</label>
             <input
               v-model="editForm.title"
               type="text"
@@ -157,51 +157,51 @@
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">รายละเอียด</label>
-            <RichTextEditor v-model="editForm.description" placeholder="พิมพ์รายละเอียด..." />
+            <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">{{ t.description }}</label>
+            <RichTextEditor v-model="editForm.description" :placeholder="t.descPlaceholder" />
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">วันเริ่มต้น</label>
+              <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">{{ t.startDate }}</label>
               <VueDatePicker
                 v-model="editForm.startDate"
                 :dark="isDark"
                 :enable-time-picker="false"
                 auto-apply
-                placeholder="เลือกวันเริ่มต้น"
+                :placeholder="t.selectStartDate"
                 format="dd/MM/yyyy"
                 input-class-name="dp-input"
               />
             </div>
             <div>
-              <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">วันสิ้นสุด</label>
+              <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">{{ t.endDate }}</label>
               <VueDatePicker
                 v-model="editForm.endDate"
                 :dark="isDark"
                 :enable-time-picker="false"
                 auto-apply
-                placeholder="เลือกวันสิ้นสุด"
+                :placeholder="t.selectEndDate"
                 format="dd/MM/yyyy"
                 input-class-name="dp-input"
               />
             </div>
           </div>
           <div>
-            <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">ผู้รับผิดชอบ</label>
+            <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">{{ t.assignee }}</label>
             <select
               v-model="editForm.assignee"
               class="w-full border border-neutral-200/70 dark:border-neutral-700/50 bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-400/40 focus:border-blue-400 outline-none"
             >
-              <option value="">ไม่ระบุ</option>
+              <option value="">{{ t.unassigned }}</option>
               <option v-for="m in project?.members" :key="m._id" :value="m._id">{{ m.name }}</option>
             </select>
           </div>
           <div class="flex justify-end gap-3">
             <button type="button" @click="editingTask = null" class="px-4 py-2 text-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 cursor-pointer">
-              ยกเลิก
+              {{ t.cancel }}
             </button>
             <button type="submit" class="bg-neutral-800 dark:bg-neutral-100 text-white dark:text-neutral-900 px-4 py-2 rounded-lg text-sm font-medium hover:bg-neutral-900 dark:hover:bg-neutral-200 transition cursor-pointer">
-              บันทึก
+              {{ t.save }}
             </button>
           </div>
         </form>
@@ -221,6 +221,7 @@ import { useProjectStore } from '../stores/projects'
 import { useTaskStore } from '../stores/tasks'
 import { useAuthStore } from '../stores/auth'
 import { useThemeStore } from '../stores/theme'
+import { useLocaleStore } from '../stores/locale'
 import BoardColumn from '../components/BoardColumn.vue'
 import AddStatusModal from '../components/AddStatusModal.vue'
 import InviteMemberModal from '../components/InviteMemberModal.vue'
@@ -231,6 +232,8 @@ const projectStore = useProjectStore()
 const taskStore = useTaskStore()
 const auth = useAuthStore()
 const themeStore = useThemeStore()
+const locale = useLocaleStore()
+const t = computed(() => locale.t)
 const isDark = computed(() => themeStore.dark)
 
 const projectId = route.params.id
@@ -328,7 +331,7 @@ function switchToEdit() {
 
 function formatDate(d) {
   if (!d) return ''
-  return new Date(d).toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' })
+  return new Date(d).toLocaleDateString(locale.dateLang, { day: 'numeric', month: 'short', year: 'numeric' })
 }
 
 function isOverdue(task) {
@@ -370,13 +373,13 @@ async function handleDeleteTask(taskId) {
 async function handleDeleteFromView() {
   const task = viewingTask.value
   const { isConfirmed } = await Swal.fire({
-    title: 'ลบ Task?',
-    text: `"${task.title}" จะถูกลบและไม่สามารถกู้คืนได้`,
+    title: t.value.deleteTaskTitle,
+    text: `"${task.title}" ${t.value.deleteTaskText}`,
     icon: 'warning',
     showCancelButton: true,
     confirmButtonColor: '#ef4444',
-    confirmButtonText: 'ลบเลย',
-    cancelButtonText: 'ยกเลิก',
+    confirmButtonText: t.value.deleteConfirm,
+    cancelButtonText: t.value.cancel,
   })
   if (!isConfirmed) return
   await taskStore.deleteTask(task._id)
@@ -385,21 +388,21 @@ async function handleDeleteFromView() {
 
 async function handleDeleteStatus(status) {
   const { isConfirmed } = await Swal.fire({
-    title: 'ลบสถานะ?',
-    text: `"${status.name}" (ต้องไม่มี task อยู่ในสถานะนี้)`,
+    title: t.value.deleteStatusTitle,
+    text: `"${status.name}" ${t.value.deleteStatusText}`,
     icon: 'warning',
     showCancelButton: true,
     confirmButtonColor: '#ef4444',
-    confirmButtonText: 'ลบเลย',
-    cancelButtonText: 'ยกเลิก',
+    confirmButtonText: t.value.deleteConfirm,
+    cancelButtonText: t.value.cancel,
   })
   if (!isConfirmed) return
   try {
     await projectStore.deleteStatus(projectId, status._id)
   } catch (err) {
     Swal.fire({
-      title: 'เกิดข้อผิดพลาด',
-      text: err.response?.data?.message || 'ลบสถานะไม่สำเร็จ',
+      title: t.value.errorTitle,
+      text: err.response?.data?.message || t.value.deleteStatusFailed,
       icon: 'error',
     })
   }

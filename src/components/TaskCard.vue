@@ -18,7 +18,7 @@
     </div>
 
     <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-2">
-      <div v-if="hasDescription" class="text-neutral-400 dark:text-neutral-500" title="มีรายละเอียด">
+      <div v-if="hasDescription" class="text-neutral-400 dark:text-neutral-500" :title="t.hasDetails">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg>
       </div>
       <span
@@ -40,13 +40,13 @@
     <!-- Context menu -->
     <div v-if="showMenu" class="absolute right-2 top-8 bg-white dark:bg-neutral-700 border border-neutral-200/70 dark:border-neutral-600 rounded-lg shadow-lg py-1 z-10 min-w-[120px]">
       <button @click="$emit('view', task)" class="w-full text-left px-3 py-1.5 text-sm text-neutral-700 dark:text-neutral-200 hover:bg-neutral-50 dark:hover:bg-neutral-600 cursor-pointer">
-        ดูรายละเอียด
+        {{ t.viewDetails }}
       </button>
       <button @click="$emit('edit', task)" class="w-full text-left px-3 py-1.5 text-sm text-neutral-700 dark:text-neutral-200 hover:bg-neutral-50 dark:hover:bg-neutral-600 cursor-pointer">
-        แก้ไข
+        {{ t.edit }}
       </button>
       <button @click="$emit('delete', task._id)" class="w-full text-left px-3 py-1.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 cursor-pointer">
-        ลบ
+        {{ t.delete }}
       </button>
     </div>
   </div>
@@ -54,7 +54,10 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useLocaleStore } from '../stores/locale'
 
+const locale = useLocaleStore()
+const t = computed(() => locale.t)
 const props = defineProps({ task: { type: Object, required: true } })
 defineEmits(['edit', 'delete', 'view'])
 
@@ -72,7 +75,7 @@ const overdue = computed(() => {
 
 function shortDate(d) {
   if (!d) return ''
-  return new Date(d).toLocaleDateString('th-TH', { day: 'numeric', month: 'short' })
+  return new Date(d).toLocaleDateString(locale.dateLang, { day: 'numeric', month: 'short' })
 }
 
 function closeMenu() {

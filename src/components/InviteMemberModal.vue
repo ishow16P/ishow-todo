@@ -1,7 +1,7 @@
 <template>
   <div class="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4" @click.self="$emit('close')">
     <div class="bg-white dark:bg-neutral-800 rounded-xl shadow-lg border border-neutral-200/70 dark:border-neutral-700/50 p-5 sm:p-6 w-full max-w-md">
-      <h2 class="text-lg font-bold text-neutral-800 dark:text-white mb-4">จัดการสมาชิก</h2>
+      <h2 class="text-lg font-bold text-neutral-800 dark:text-white mb-4">{{ t.manageMembers }}</h2>
 
       <!-- Invite form -->
       <form @submit.prevent="handleInvite" class="flex gap-2 mb-6">
@@ -9,7 +9,7 @@
           v-model="email"
           type="email"
           required
-          placeholder="อีเมลที่ต้องการเชิญ"
+          :placeholder="t.inviteEmailPlaceholder"
           class="flex-1 border border-neutral-200/70 dark:border-neutral-700/50 bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400/40 focus:border-blue-400 outline-none"
         />
         <button
@@ -17,7 +17,7 @@
           :disabled="inviting"
           class="bg-neutral-800 dark:bg-neutral-100 text-white dark:text-neutral-900 px-4 py-2 rounded-lg text-sm font-medium hover:bg-neutral-900 dark:hover:bg-neutral-200 transition disabled:opacity-50 shrink-0 cursor-pointer"
         >
-          เชิญ
+          {{ t.invite }}
         </button>
       </form>
 
@@ -36,13 +36,13 @@
             <p class="text-xs text-neutral-500 dark:text-neutral-400">{{ member.email }}</p>
           </div>
           <div class="flex items-center gap-2">
-            <span v-if="member._id === project.owner._id" class="text-xs text-blue-600 dark:text-blue-400 font-medium">เจ้าของ</span>
+            <span v-if="member._id === project.owner._id" class="text-xs text-blue-600 dark:text-blue-400 font-medium">{{ t.owner }}</span>
             <button
               v-else-if="isOwner"
               @click="handleRemove(member._id)"
               class="text-xs text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 cursor-pointer"
             >
-              ลบ
+              {{ t.delete }}
             </button>
           </div>
         </div>
@@ -50,7 +50,7 @@
 
       <div class="flex justify-end mt-4">
         <button @click="$emit('close')" class="px-4 py-2 text-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 cursor-pointer">
-          ปิด
+          {{ t.close }}
         </button>
       </div>
     </div>
@@ -61,12 +61,15 @@
 import { ref, computed } from 'vue'
 import { useProjectStore } from '../stores/projects'
 import { useAuthStore } from '../stores/auth'
+import { useLocaleStore } from '../stores/locale'
 
 const props = defineProps({ project: { type: Object, required: true } })
 defineEmits(['close'])
 
 const projectStore = useProjectStore()
 const auth = useAuthStore()
+const locale = useLocaleStore()
+const t = computed(() => locale.t)
 
 const email = ref('')
 const error = ref('')
@@ -81,10 +84,10 @@ async function handleInvite() {
   inviting.value = true
   try {
     await projectStore.inviteMember(props.project._id, email.value)
-    success.value = `เชิญ ${email.value} สำเร็จ`
+    success.value = `${t.value.invite} ${email.value} ${t.value.inviteSuccess}`
     email.value = ''
   } catch (err) {
-    error.value = err.response?.data?.message || 'เชิญสมาชิกไม่สำเร็จ'
+    error.value = err.response?.data?.message || t.value.inviteFailed
   } finally {
     inviting.value = false
   }
@@ -94,7 +97,7 @@ async function handleRemove(userId) {
   try {
     await projectStore.removeMember(props.project._id, userId)
   } catch (err) {
-    error.value = err.response?.data?.message || 'ลบสมาชิกไม่สำเร็จ'
+    error.value = err.response?.data?.message || t.value.removeMemberFailed
   }
 }
 </script>

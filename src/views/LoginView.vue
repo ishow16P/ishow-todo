@@ -2,7 +2,7 @@
   <div class="min-h-screen flex items-center justify-center bg-stone-50 dark:bg-neutral-900 px-4 transition-colors">
     <div class="bg-white dark:bg-neutral-800 rounded-xl border border-neutral-200/70 dark:border-neutral-700/50 p-6 sm:p-8 w-full max-w-sm">
       <h1 class="text-xl sm:text-2xl font-bold text-center text-neutral-800 dark:text-white mb-2">ishow-todos</h1>
-      <p class="text-center text-sm text-neutral-500 dark:text-neutral-400 mb-6">เข้าสู่ระบบ</p>
+      <p class="text-center text-sm text-neutral-500 dark:text-neutral-400 mb-6">{{ t.login }}</p>
 
       <div v-if="error" class="bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-sm rounded-lg p-3 mb-4">
         {{ error }}
@@ -10,7 +10,7 @@
 
       <form @submit.prevent="handleLogin" class="space-y-4">
         <div>
-          <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">อีเมล</label>
+          <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">{{ t.email }}</label>
           <input
             v-model="email"
             type="email"
@@ -21,7 +21,7 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">รหัสผ่าน</label>
+          <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">{{ t.password }}</label>
           <input
             v-model="password"
             type="password"
@@ -36,17 +36,20 @@
           :disabled="loading"
           class="w-full bg-neutral-800 dark:bg-neutral-100 text-white dark:text-neutral-900 py-2.5 rounded-md font-medium hover:bg-neutral-900 dark:hover:bg-neutral-200 transition disabled:opacity-50 cursor-pointer"
         >
-          {{ loading ? 'กำลังเข้าสู่ระบบ...' : 'เข้าสู่ระบบ' }}
+          {{ loading ? t.loggingIn : t.login }}
         </button>
       </form>
 
       <p class="text-center text-sm text-neutral-500 dark:text-neutral-400 mt-6">
-        ยังไม่มีบัญชี?
-        <router-link to="/register" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">สมัครสมาชิก</router-link>
+        {{ t.noAccount }}
+        <router-link to="/register" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">{{ t.register }}</router-link>
       </p>
 
-      <!-- Theme toggle on auth pages -->
-      <div class="flex justify-center mt-4">
+      <div class="flex justify-center gap-3 mt-4">
+        <button @click="locale.toggle()" class="text-xs text-neutral-400 dark:text-neutral-500 hover:text-neutral-600 dark:hover:text-neutral-300 transition cursor-pointer">
+          {{ locale.lang === 'th' ? 'English' : 'ภาษาไทย' }}
+        </button>
+        <span class="text-neutral-300 dark:text-neutral-600">|</span>
         <button @click="theme.toggle()" class="text-xs text-neutral-400 dark:text-neutral-500 hover:text-neutral-600 dark:hover:text-neutral-300 transition cursor-pointer">
           {{ theme.dark ? 'Light Mode' : 'Dark Mode' }}
         </button>
@@ -56,13 +59,16 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import { useThemeStore } from '../stores/theme'
+import { useLocaleStore } from '../stores/locale'
 
 const auth = useAuthStore()
 const theme = useThemeStore()
+const locale = useLocaleStore()
+const t = computed(() => locale.t)
 const router = useRouter()
 
 const email = ref('')
@@ -77,7 +83,7 @@ async function handleLogin() {
     await auth.login(email.value, password.value)
     router.push('/')
   } catch (err) {
-    error.value = err.response?.data?.message || 'เข้าสู่ระบบไม่สำเร็จ'
+    error.value = err.response?.data?.message || t.value.loginFailed
   } finally {
     loading.value = false
   }

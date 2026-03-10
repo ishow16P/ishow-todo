@@ -3,7 +3,7 @@
     <!-- Column header -->
     <div class="flex items-center justify-between px-3 py-2.5 border-b border-neutral-200/70 dark:border-neutral-700/50">
       <div class="flex items-center gap-2 min-w-0">
-        <div class="column-drag-handle cursor-grab active:cursor-grabbing text-neutral-300 dark:text-neutral-600 hover:text-neutral-500 dark:hover:text-neutral-400 transition shrink-0" title="ลากเพื่อสลับตำแหน่ง">
+        <div class="column-drag-handle cursor-grab active:cursor-grabbing text-neutral-300 dark:text-neutral-600 hover:text-neutral-500 dark:hover:text-neutral-400 transition shrink-0" :title="t.dragToReorder">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
             <circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/>
             <circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/>
@@ -18,7 +18,7 @@
         v-if="isOwner"
         @click="$emit('deleteStatus', status)"
         class="text-neutral-400 dark:text-neutral-500 hover:text-red-500 dark:hover:text-red-400 text-sm cursor-pointer transition shrink-0 ml-1"
-        title="ลบสถานะ"
+        :title="t.deleteStatus"
       >
         &times;
       </button>
@@ -53,51 +53,51 @@
         @click="showAdd = true"
         class="w-full text-left text-sm text-neutral-400 dark:text-neutral-500 hover:text-neutral-600 dark:hover:text-neutral-300 py-1 cursor-pointer transition"
       >
-        + เพิ่ม task
+        {{ t.addTask }}
       </button>
     </div>
 
     <!-- Add task modal -->
     <div v-if="showAdd" class="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4" @click.self="showAdd = false">
       <div class="bg-white dark:bg-neutral-800 rounded-xl shadow-lg border border-neutral-200/70 dark:border-neutral-700/50 p-5 sm:p-6 w-full max-w-md">
-        <h2 class="text-lg font-bold text-neutral-800 dark:text-white mb-4">เพิ่ม Task ใน {{ status.name }}</h2>
+        <h2 class="text-lg font-bold text-neutral-800 dark:text-white mb-4">{{ t.addTaskIn }} {{ status.name }}</h2>
         <form @submit.prevent="handleAdd" class="space-y-4">
           <div>
-            <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">ชื่อ</label>
+            <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">{{ t.title }}</label>
             <input
               v-model="newTitle"
               type="text"
               ref="addInput"
               required
-              placeholder="ชื่อ task..."
+              :placeholder="t.taskNamePlaceholder"
               class="w-full border border-neutral-200/70 dark:border-neutral-700/50 bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-400/40 focus:border-blue-400 outline-none"
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">รายละเอียด</label>
-            <RichTextEditor v-model="newDescription" placeholder="พิมพ์รายละเอียด..." />
+            <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">{{ t.description }}</label>
+            <RichTextEditor v-model="newDescription" :placeholder="t.descPlaceholder" />
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">วันเริ่มต้น</label>
+              <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">{{ t.startDate }}</label>
               <VueDatePicker
                 v-model="newStartDate"
                 :dark="isDark"
                 :enable-time-picker="false"
                 auto-apply
-                placeholder="เลือกวันเริ่มต้น"
+                :placeholder="t.selectStartDate"
                 format="dd/MM/yyyy"
                 input-class-name="dp-input"
               />
             </div>
             <div>
-              <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">วันสิ้นสุด</label>
+              <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">{{ t.endDate }}</label>
               <VueDatePicker
                 v-model="newEndDate"
                 :dark="isDark"
                 :enable-time-picker="false"
                 auto-apply
-                placeholder="เลือกวันสิ้นสุด"
+                :placeholder="t.selectEndDate"
                 format="dd/MM/yyyy"
                 input-class-name="dp-input"
               />
@@ -105,10 +105,10 @@
           </div>
           <div class="flex justify-end gap-3">
             <button type="button" @click="showAdd = false" class="px-4 py-2 text-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200 cursor-pointer">
-              ยกเลิก
+              {{ t.cancel }}
             </button>
             <button type="submit" class="bg-neutral-800 dark:bg-neutral-100 text-white dark:text-neutral-900 px-4 py-2 rounded-lg text-sm font-medium hover:bg-neutral-900 dark:hover:bg-neutral-200 transition cursor-pointer">
-              เพิ่ม
+              {{ t.add }}
             </button>
           </div>
         </form>
@@ -123,10 +123,13 @@ import draggable from 'vuedraggable'
 import { VueDatePicker } from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
 import { useThemeStore } from '../stores/theme'
+import { useLocaleStore } from '../stores/locale'
 import TaskCard from './TaskCard.vue'
 import RichTextEditor from './RichTextEditor.vue'
 
 const theme = useThemeStore()
+const locale = useLocaleStore()
+const t = computed(() => locale.t)
 const isDark = computed(() => theme.dark)
 
 const props = defineProps({
